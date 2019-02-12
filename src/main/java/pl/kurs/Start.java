@@ -3,28 +3,42 @@ package pl.kurs;
 import java.util.List;
 import java.util.Random;
 
-import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
-import javax.transaction.TransactionManager;
 
-import org.aspectj.lang.annotation.Before;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.orm.jpa.AbstractEntityManagerFactoryBean;
-import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.orm.jpa.JpaVendorAdapter;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor;
-import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 @Configuration
 class CarsConfiguration {
+
+	@Bean
+	public DataSource dataSource() {
+		MysqlDataSource dataSource = new MysqlDataSource();
+		dataSource.setUrl("jdbc:mysql://127.0.0.1:6033/komis");
+		dataSource.setUser("root");
+		dataSource.setPassword("");
+		return dataSource;
+	}
+
+	/*
+
+	Utworzenie bazy danych "komis" i tabeli "car":
+	create database komis;
+	use komis
+	create table car;
+	create table car(id int unsigned not null auto_increment, make varchar(20), model varchar(20),
+	price double(7,2), regnum varchar(40), constraint pk_id primary key (id));
+
+	 */
+
+	@Bean
+	public CarDAO carDAO(DataSource dataSource) {
+		return new CarDAOJdbc(dataSource);
+	}
 
 }
 
@@ -48,7 +62,7 @@ public class Start {
 		}
 
 		for (Car car : cars) {
-			dao.delete(car.getIdc());
+			dao.delete(car.getId());
 		}
 
 	}

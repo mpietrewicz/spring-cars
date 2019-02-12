@@ -21,7 +21,7 @@ public class CarDAOSpringJdbc extends JdbcDaoSupport implements CarDAO {
 
 	@Override
 	public void delete(int idc) {
-		getJdbcTemplate().update("delete from car where idc=?", new Object[] { idc });
+		getJdbcTemplate().update("delete from car where id=?", new Object[] { idc });
 	}
 
 	@Override

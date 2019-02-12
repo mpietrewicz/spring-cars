@@ -18,22 +18,47 @@ public class CarDAOJdbc implements CarDAO {
 
 	@Override
 	public List<Car> getAll() {
-		throw new RuntimeException("Implement me");
+		List<Car> carList = new ArrayList<Car>();
+		try {
+			ResultSet resultSet = dataSource.getConnection().createStatement().executeQuery("select * from car");
+			while (resultSet.next()) {
+				Car car = new Car();
+				car.setId(resultSet.getInt("id"));
+				car.setMake(resultSet.getString("make"));
+				car.setModel(resultSet.getString("model"));
+				car.setPrice(resultSet.getDouble("price"));
+				car.setRegNum(resultSet.getString("regnum"));
+				carList.add(car);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return carList;
 	}
 
 	@Override
 	public void create(Car car) {
-		throw new RuntimeException("Implement me");
+		try {
+			PreparedStatement statement = dataSource.getConnection().
+					prepareStatement("insert into car(make, model, regnum, price) values(?, ?, ?, ?)");
+			statement.setString(1, car.getMake());
+			statement.setString(2, car.getModel());
+			statement.setString(3, car.getRegNum());
+			statement.setDouble(4, car.getPrice());
+			statement.executeUpdate();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		}
 	}
 
 	@Override
-	public Car get(int idc) {
+	public Car get(int id) {
 		try {
 			ResultSet rs = dataSource.getConnection().createStatement()
-					.executeQuery("select * from car where idc=" + idc);
+					.executeQuery("select * from car where id=" + id);
 			rs.next();
 			Car car = new Car();
-			car.setIdc(rs.getInt("idc"));
+			car.setId(rs.getInt("id"));
 			car.setMake(rs.getString("make"));
 			car.setModel(rs.getString("model"));
 			car.setPrice(rs.getDouble("price"));
@@ -63,7 +88,7 @@ public class CarDAOJdbc implements CarDAO {
 	@Override
 	public void delete(int idc) {
 		try {
-			PreparedStatement pstmt = dataSource.getConnection().prepareStatement("delete from car where idc=?");
+			PreparedStatement pstmt = dataSource.getConnection().prepareStatement("delete from car where id=?");
 			pstmt.setInt(1, idc);
 			pstmt.executeUpdate();
 		} catch (SQLException ex) {
