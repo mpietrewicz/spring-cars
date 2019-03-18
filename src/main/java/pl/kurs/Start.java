@@ -37,7 +37,9 @@ class CarsConfiguration {
 
 	@Bean
 	public CarDAO carDAO(DataSource dataSource) {
-		return new CarDAOJdbc(dataSource);
+		CarDAOSpringJdbc carDAOSpringJdbc = new CarDAOSpringJdbc();
+		carDAOSpringJdbc.setDataSource(dataSource);
+		return carDAOSpringJdbc;
 	}
 
 }

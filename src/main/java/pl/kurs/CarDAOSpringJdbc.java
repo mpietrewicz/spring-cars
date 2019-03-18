@@ -9,14 +9,28 @@ import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 public class CarDAOSpringJdbc extends JdbcDaoSupport implements CarDAO {
 
+	private static final RowMapper<Car> mapper = new RowMapper<Car>() {
+		@Override
+		public Car mapRow(ResultSet resultSet, int i) throws SQLException {
+			Car car = new Car();
+			car.setId(resultSet.getInt("id"));
+			car.setMake(resultSet.getString("make"));
+			car.setModel(resultSet.getString("model"));
+			car.setRegNum(resultSet.getString("regnum"));
+			car.setPrice(resultSet.getDouble("price"));
+			return car;
+		}
+	};
+
 	@Override
 	public List<Car> getAll() {
-		throw new RuntimeException("Implement me");
+		return getJdbcTemplate().query("select * from car", mapper);
 	}
 
 	@Override
 	public void create(Car car) {
-		throw new RuntimeException("Implement me");
+		getJdbcTemplate().update("insert into car(make, model, regnum, price) values(?, ?, ?, ?)",
+				car.getMake(), car.getModel(), car.getRegNum(), car.getPrice());
 	}
 
 	@Override
