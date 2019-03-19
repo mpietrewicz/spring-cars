@@ -2,8 +2,10 @@ package pl.kurs;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
@@ -39,8 +41,13 @@ public class CarDAOSpringJdbc extends JdbcDaoSupport implements CarDAO {
 	}
 
 	@Override
-	public Car get(int idc) {
-		throw new RuntimeException("Not implemented and not needed in examples. Could be omitted.");
+	public Car get(int id) {
+		try {
+			return getJdbcTemplate().queryForObject("select * from car where id=?", mapper, id);
+		} catch (EmptyResultDataAccessException exception) {
+			System.out.println("Błąd! Nie znaleziono rekordu o id: " +id);
+			return null;
+		}
 	}
 
 	@Override

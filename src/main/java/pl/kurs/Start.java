@@ -63,7 +63,10 @@ public class Start {
 			System.out.println(car.toString());
 		}
 
+		dao.get(0);
+
 		for (Car car : cars) {
+			System.out.println("Delete car id: " + car.id +" Model: " +dao.get(car.getId()).getModel());
 			dao.delete(car.getId());
 		}
 
