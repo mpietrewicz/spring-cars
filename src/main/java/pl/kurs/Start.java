@@ -73,12 +73,18 @@ public class Start {
 			System.out.println(car.toString());
 		}
 
-		dao.get(0);
+		Car car = dao.get(163);
+		System.out.println("car: " +car);
+		car.setModel("XXX");
+		dao.update(car);
+		Car updatedCar = dao.get(163);
+		System.out.println("updatedCar: " +updatedCar);
 
-		for (Car car : cars) {
-			System.out.println("Delete car id: " + car.id +" Model: " +dao.get(car.getId()).getModel());
-			dao.delete(car.getId());
-		}
+
+//		for (Car car : cars) {
+//			System.out.println("Delete car id: " + car.id +" Model: " +dao.get(car.getId()).getModel());
+//			dao.delete(car.getId());
+//		}
 
 	}
 }

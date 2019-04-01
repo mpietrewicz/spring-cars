@@ -3,9 +3,14 @@ package pl.kurs;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
 @Setter @Getter
+@Entity
 public class Car {
-	int id;
+	@Id
+    int id;
 	String make;
 	String model;
 	String regNum;
