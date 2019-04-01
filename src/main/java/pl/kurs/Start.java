@@ -11,16 +11,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.AbstractEntityManagerFactoryBean;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
-@EnableTransactionManagement
+@EnableJpaRepositories(basePackages = "pl.kurs")
 class CarsConfiguration {
 
 	@Bean
@@ -60,9 +60,9 @@ class CarsConfiguration {
     }
 
 	@Bean
-	public CarDAO carDAO() {
-        CarDAOJpa carDAOJpa = new CarDAOJpa();
-        return carDAOJpa;
+	public CarDAO carDAO(CarRepository carRepository) {
+        CarDAOSpringData carDAOSpringData = new CarDAOSpringData(carRepository);
+        return carDAOSpringData;
 	}
 
 }

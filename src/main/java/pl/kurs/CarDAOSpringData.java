@@ -12,27 +12,27 @@ public class CarDAOSpringData implements CarDAO {
 
 	@Override
 	public List<Car> getAll() {
-		throw new RuntimeException("Implement me");
+		return carRepository.findAll();
 	}
 
 	@Override
 	public Car get(int idc) {
-		throw new RuntimeException("Implement me");
+		return carRepository.findOne(idc);
 	}
 
 	@Override
 	public void create(Car car) {
-		throw new RuntimeException("Implement me");
+		carRepository.save(car);
 	}
 
 	@Override
 	public void update(Car car) {
-		throw new RuntimeException("Implement me");
+		carRepository.save(car);
 	}
 
 	@Override
 	public void delete(int idc) {
-		throw new RuntimeException("Implement me");
+		carRepository.delete(idc);
 	}
 
 }
