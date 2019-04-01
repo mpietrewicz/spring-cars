@@ -3,35 +3,30 @@ package pl.kurs;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 
 public class CarDAOJpa implements CarDAO {
 
-	EntityManagerFactory entityManagerFactory;
+	@PersistenceContext EntityManager entityManager;
 
-	public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
-		this.entityManagerFactory = entityManagerFactory;
-	}
-
+	@Transactional
 	@Override
 	public List<Car> getAll() {
-		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		List<Car> cars = entityManager.createQuery("from Car").getResultList();
-		entityManager.close();
 		return cars;
 	}
 
+	@Transactional
 	@Override
 	public Car get(int idc) {
-		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		Car car = entityManager.find(Car.class, idc);
-		entityManager.close();
 		return car;
 	}
 
+	@Transactional
 	@Override
 public void create(Car car) {
-		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		try {
 			entityManager.getTransaction().begin();
 			entityManager.persist(car);
@@ -42,14 +37,12 @@ public void create(Car car) {
 			} catch (Exception rollbackException) {
 				System.out.println("rollbackException: " + rollbackException.getMessage());
 			}
-		} finally {
-			entityManager.close();
 		}
 	}
 
+	@Transactional
 	@Override
 	public void update(Car car) {
-		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		try {
 			entityManager.getTransaction().begin();
 			Car carToUpdate = entityManager.find(Car.class, car.getId());
@@ -67,17 +60,14 @@ public void create(Car car) {
 			} catch (Exception rollbackException) {
 				System.out.println("rollbackException: " + rollbackException.getMessage());
 			}
-		} finally {
-			entityManager.close();
 		}
 	}
 
+	@Transactional
 	@Override
 	public void delete(int idc) {
-		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		Car car = entityManager.find(Car.class, idc);
 		entityManager.remove(car);
-		entityManager.close();
 	}
 
 }

@@ -3,7 +3,6 @@ package pl.kurs;
 import java.util.List;
 import java.util.Random;
 
-import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 import org.springframework.context.ApplicationContext;
@@ -12,11 +11,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
+import org.springframework.orm.jpa.AbstractEntityManagerFactoryBean;
+import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
+@EnableTransactionManagement
 class CarsConfiguration {
 
 	@Bean
@@ -26,6 +30,16 @@ class CarsConfiguration {
 		dataSource.setUser("root");
 		dataSource.setPassword("");
 		return dataSource;
+	}
+
+	@Bean
+	public JpaTransactionManager transactionManager(AbstractEntityManagerFactoryBean entityManageFactory) {
+		return new JpaTransactionManager(entityManageFactory.getObject());
+	}
+
+	@Bean
+	public PersistenceAnnotationBeanPostProcessor persistenceAnnotationBeanPostProcessor() {
+		return new PersistenceAnnotationBeanPostProcessor();
 	}
 
     @Bean
@@ -46,9 +60,8 @@ class CarsConfiguration {
     }
 
 	@Bean
-	public CarDAO carDAO(EntityManagerFactory entityManagerFactory) {
+	public CarDAO carDAO() {
         CarDAOJpa carDAOJpa = new CarDAOJpa();
-        carDAOJpa.setEntityManagerFactory(entityManagerFactory);
         return carDAOJpa;
 	}
 
@@ -73,18 +86,18 @@ public class Start {
 			System.out.println(car.toString());
 		}
 
-		Car car = dao.get(163);
-		System.out.println("car: " +car);
-		car.setModel("XXX");
-		dao.update(car);
-		Car updatedCar = dao.get(163);
-		System.out.println("updatedCar: " +updatedCar);
+//		Car car = dao.get(163);
+//		System.out.println("car: " +car);
+//		car.setModel("XXX");
+//		dao.update(car);
+//		Car updatedCar = dao.get(163);
+//		System.out.println("updatedCar: " +updatedCar);
 
 
-//		for (Car car : cars) {
-//			System.out.println("Delete car id: " + car.id +" Model: " +dao.get(car.getId()).getModel());
-//			dao.delete(car.getId());
-//		}
+		for (Car car : cars) {
+			System.out.println("Delete car id: " + car.id +" Model: " +dao.get(car.getId()).getModel());
+			dao.delete(car.getId());
+		}
 
 	}
 }
