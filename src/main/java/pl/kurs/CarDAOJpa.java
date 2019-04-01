@@ -2,12 +2,15 @@ package pl.kurs;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
 
 public class CarDAOJpa implements CarDAO {
+
+	EntityManagerFactory entityManagerFactory;
+
+	public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
+		this.entityManagerFactory = entityManagerFactory;
+	}
 
 	@Override
 	public List<Car> getAll() {

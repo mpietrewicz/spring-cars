@@ -3,6 +3,7 @@ package pl.kurs;
 import java.util.List;
 import java.util.Random;
 
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 import org.springframework.context.ApplicationContext;
@@ -11,6 +12,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
+import org.springframework.orm.jpa.JpaVendorAdapter;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 
 @Configuration
 class CarsConfiguration {
@@ -24,22 +28,28 @@ class CarsConfiguration {
 		return dataSource;
 	}
 
-	/*
+    @Bean
+    public JpaVendorAdapter jpaVendorAdapter() {
+        HibernateJpaVendorAdapter hibernateJpaVendorAdapter = new HibernateJpaVendorAdapter();
+        hibernateJpaVendorAdapter.setShowSql(true);
+        hibernateJpaVendorAdapter.setGenerateDdl(true);
+        hibernateJpaVendorAdapter.setDatabasePlatform("org.hibernate.dialect.MySQLDialect");
+        return hibernateJpaVendorAdapter;
+    }
 
-	Utworzenie bazy danych "komis" i tabeli "car":
-	create database komis;
-	use komis
-	create table car;
-	create table car(id int unsigned not null auto_increment, make varchar(20), model varchar(20),
-	price double(7,2), regnum varchar(40), constraint pk_id primary key (id));
-
-	 */
+    @Bean
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource, JpaVendorAdapter jpaVendorAdapter) {
+        LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
+        entityManagerFactory.setDataSource(dataSource);
+        entityManagerFactory.setJpaVendorAdapter(jpaVendorAdapter);
+        return entityManagerFactory;
+    }
 
 	@Bean
-	public CarDAO carDAO(DataSource dataSource) {
-		CarDAOSpringJdbc carDAOSpringJdbc = new CarDAOSpringJdbc();
-		carDAOSpringJdbc.setDataSource(dataSource);
-		return carDAOSpringJdbc;
+	public CarDAO carDAO(EntityManagerFactory entityManagerFactory) {
+        CarDAOJpa carDAOJpa = new CarDAOJpa();
+        carDAOJpa.setEntityManagerFactory(entityManagerFactory);
+        return carDAOJpa;
 	}
 
 }
